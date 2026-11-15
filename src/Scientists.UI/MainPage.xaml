@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Scientists.UI.MainPage">
+
+    <!-- Головне меню: пункти викликають ті самі обробники, що й кнопки -->
+    <ContentPage.MenuBarItems>
+        <MenuBarItem Text="Файл">
+            <MenuFlyoutItem Text="Відкрити XML" Clicked="OnOpenXmlClicked" />
+            <MenuFlyoutItem Text="Відкрити XSL" Clicked="OnOpenXslClicked" />
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem Text="Відкрити XML з Google Drive" Clicked="OnOpenXmlDriveClicked" />
+            <MenuFlyoutItem Text="Відкрити XSL з Google Drive" Clicked="OnOpenXslDriveClicked" />
+            <MenuFlyoutItem Text="Зберегти XML і XSL на Google Drive" Clicked="OnUploadSourcesClicked" />
+        </MenuBarItem>
+        <MenuBarItem Text="Пошук">
+            <MenuFlyoutItem Text="Знайти" Clicked="OnSearchClicked" />
+            <MenuFlyoutItem Text="Очистити" Clicked="OnClearClicked" />
+        </MenuBarItem>
+        <MenuBarItem Text="Результат">
+            <MenuFlyoutItem Text="Зберегти у HTML" Clicked="OnSaveHtmlClicked" />
+            <MenuFlyoutItem Text="Зберегти у XML" Clicked="OnSaveXmlClicked" />
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem Text="Зберегти HTML на Google Drive" Clicked="OnSaveHtmlDriveClicked" />
+            <MenuFlyoutItem Text="Зберегти XML на Google Drive" Clicked="OnSaveXmlDriveClicked" />
+        </MenuBarItem>
+        <MenuBarItem Text="Довідка">
+            <MenuFlyoutItem Text="Про програму" Clicked="OnHelpClicked" />
+        </MenuBarItem>
+    </ContentPage.MenuBarItems>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="8" RowSpacing="6">
+
+        <!-- Кнопки дублюють головне меню; кожна лише викликає метод контролера -->
+        <!-- Два ряди: вихідні файли і результати (FlexLayout з переносом на Windows не ловить кліки праворуч) -->
+        <VerticalStackLayout Grid.Row="0" Spacing="6">
+            <VerticalStackLayout.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Padding" Value="10,4" />
+                </Style>
+            </VerticalStackLayout.Resources>
+            <HorizontalStackLayout Spacing="6">
+                <Button Text="Відкрити XML" Clicked="OnOpenXmlClicked" />
+                <Button Text="Відкрити XSL" Clicked="OnOpenXslClicked" />
+                <Button Text="XML з Drive" Clicked="OnOpenXmlDriveClicked" />
+                <Button Text="XSL з Drive" Clicked="OnOpenXslDriveClicked" />
+                <Button Text="XML і XSL на Drive" Clicked="OnUploadSourcesClicked" />
+                <Button Text="Довідка" Clicked="OnHelpClicked" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="6">
+                <Button Text="Знайти" Clicked="OnSearchClicked" />
+                <Button Text="Очистити" Clicked="OnClearClicked" />
+                <Button Text="Зберегти HTML" Clicked="OnSaveHtmlClicked" />
+                <Button Text="Зберегти XML" Clicked="OnSaveXmlClicked" />
+                <Button Text="HTML на Drive" Clicked="OnSaveHtmlDriveClicked" />
+                <Button Text="XML на Drive" Clicked="OnSaveXmlDriveClicked" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+
+        <Label x:Name="filesLabel" Grid.Row="1" FontAttributes="Bold" />
+
+        <Grid Grid.Row="2" ColumnDefinitions="280,*" ColumnSpacing="12">
+
+            <!-- Ліва панель: спосіб аналізу і списки значень атрибутів (заповнюються з файлу) -->
+            <ScrollView>
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Спосіб аналізу XML" FontAttributes="Bold" />
+                    <VerticalStackLayout x:Name="strategiesPanel" />
+                    <Label Text="Умови пошуку" FontAttributes="Bold" Margin="0,10,0,0" />
+                    <VerticalStackLayout x:Name="filtersPanel" Spacing="4" />
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- Результати пошуку -->
+            <Grid Grid.Column="1" RowDefinitions="Auto,*">
+                <Grid ColumnDefinitions="2*,2*,2*,*,80,70,*" BackgroundColor="{AppThemeBinding Light=#E8E4F8, Dark=#3A3450}" Padding="4">
+                    <Label Text="ПІП" FontAttributes="Bold" />
+                    <Label Grid.Column="1" Text="Факультет" FontAttributes="Bold" />
+                    <Label Grid.Column="2" Text="Кафедра" FontAttributes="Bold" />
+                    <Label Grid.Column="3" Text="Посада" FontAttributes="Bold" />
+                    <Label Grid.Column="4" Text="Оклад" FontAttributes="Bold" />
+                    <Label Grid.Column="5" Text="З року" FontAttributes="Bold" />
+                    <Label Grid.Column="6" Text="Ступінь" FontAttributes="Bold" />
+                </Grid>
+                <CollectionView x:Name="resultsView" Grid.Row="1">
+                    <CollectionView.EmptyView>
+                        <Label Text="Немає результатів" Padding="4" TextColor="Gray" />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="2*,2*,2*,*,80,70,*" Padding="4">
+                                <Label Text="{Binding FullName}" />
+                                <Label Grid.Column="1" Text="{Binding Faculty}" />
+                                <Label Grid.Column="2" Text="{Binding Department}" />
+                                <Label Grid.Column="3" Text="{Binding Position}" />
+                                <Label Grid.Column="4" Text="{Binding Salary}" />
+                                <Label Grid.Column="5" Text="{Binding Since}" />
+                                <Label Grid.Column="6" Text="{Binding Degree}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Grid>
+
+        <!-- Рядок стану: повідомлення -->
+        <Label x:Name="statusLabel" Grid.Row="3" />
+    </Grid>
+</ContentPage>
