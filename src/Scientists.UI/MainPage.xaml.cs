@@ -13,7 +13,7 @@ public partial class MainPage : ContentPage
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Scientists19");
 
     private readonly ScientistsController controller = new(
-        new LocalFileStorage(), null, Path.Combine(FilesFolder, "log.txt"));
+        new LocalFileStorage(), new GoogleDriveStorage(FilesFolder), Path.Combine(FilesFolder, "log.txt"));
     private readonly Dictionary<string, Picker> filters = new();   // атрибут -> список його значень
     private int strategyIndex;                                     // обраний спосіб аналізу (SAX, DOM, LINQ)
 
